@@ -73,6 +73,25 @@ You should see something like this:
 
 On each command there is specific detail instruction on how to run the command and how to use arguments.
 
+## Get Issue
+
+To view basic stats for an issue (assignee, description, reporter, status):
+
+```shell
+jiracli get KAN-3
+```
+
+Example output:
+
+```
+Request successful ⭐
+Assignee: John Doe
+Description: Fix deep link handling on iOS
+Email: john.doe@example.com
+Reporter: Jane Smith
+Status: In Progress - In Progress
+```
+
 For adding a worklog on a specific issue (task) we run:
 
 ```shell
@@ -125,6 +144,14 @@ Example:
 | Wednesday   | KAN-6  | 7.25h | 2024-09-21 | 0        |
 
 The CLI tracks progress using a sidecar status file (`.csv.status`). If some rows fail, you can re-run the same command and only the failed rows will be retried. Already-logged rows are skipped automatically.
+
+The sidecar file is named `.<csv_file_name>.status` (note the leading dot, so it's hidden — use `ls -a` to see it) and lives next to your CSV file. For example, logging from `logs.csv` creates `.logs.csv.status`.
+
+Once a CSV file is fully logged, running `log-from-csv` on it again will report `CSV file already logged.` and do nothing, even if you delete and recreate the CSV file with new content. To log the same file again from scratch, delete its status file first:
+
+```shell
+rm .logs.csv.status
+```
 
 
 ## My Issues

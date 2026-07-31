@@ -135,7 +135,7 @@ def add_worklog(
     Add issue worklogs.
     Run this command with Issue Key/task (e.g. KAN-3), time (examples, 7h, 7h30m, 7.5h, 20m),
     date (YYYY-MM-DD), comment (Optional) and overtime (Optional-allows logging up to 13h on a single day).
-    Example: jiracli add-worklog KAN-3 7.5h 2023-12-12 --comment "Done some work here." --overtime
+    Example: jiracli add KAN-3 7.5h 2023-12-12 --comment "Done some work here." --overtime
     """
     issue = _validate_issue_key(issue)
     _submit_worklog(issue, logged_time, date, comment, overtime)

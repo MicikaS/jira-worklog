@@ -4,7 +4,7 @@ WORKING_DAYS = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"}
 
 
 def convert_to_hours(time_spent: str) -> float:
-    total_hours = 0
+    total_hours = 0.0
     parts = time_spent.split()
     for part in parts:
         if part.endswith("w"):

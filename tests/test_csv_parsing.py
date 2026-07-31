@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import typer
 
-from jiracli_pkg.main import _try_log_time_from_csv_file, _get_status_file_path
+from jiracli_pkg.main import _get_status_file_path, _try_log_time_from_csv_file
 
 
 class TestCsvParsing(unittest.TestCase):

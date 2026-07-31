@@ -1,6 +1,6 @@
 # Jira CLI Tool
 
-This readme describes instructions on how to use Jira CLI tool for logging time.
+Jira CLI Tool is a Python command-line application for managing Jira worklogs, searching assigned issues, importing worklogs from CSV files, and generating monthly time reports. It was created to automate a repetitive internal workflow and reduce manual Jira administration.
 
 ## Setup
 
@@ -40,7 +40,11 @@ If these variables are not set, the working-hours check is disabled entirely.
 
 ## Installation
 
-Cd into the project and activate the .venv:
+Cd into the project, create a virtual environment, and activate it:
+
+```shell
+python -m venv venv
+```
 
 ### Windows:
 ```shell
@@ -56,6 +60,51 @@ In your project's root directory (where setup.py is located), run:
 
 ```shell
 pip install -e .
+```
+
+## Testing
+
+Install pytest and run the test suite with:
+
+```shell
+pip install pytest
+pytest
+```
+
+The project has test coverage for payload building, CSV parsing, date and time validation, overtime logic, issue search, and worklog display.
+
+### Development checks
+
+Dev tools (`pytest`, `ruff`, `mypy`, `invoke`) are managed via `tasks.py`. Install them with:
+
+```shell
+pip install -r requirements-dev.txt
+```
+
+Then run any of the following:
+
+```shell
+inv test         # run the test suite
+inv lint         # run the ruff linter
+inv typecheck    # run mypy
+inv build-local  # run lint, typecheck, then test — stops at the first failure
+```
+
+Example `inv build-local` output:
+
+```
+=== lint ===
+All checks passed!
+
+=== typecheck ===
+Success: no issues found in 4 source files
+
+=== test ===
+........................................................................ [ 84%]
+.............                                                            [100%]
+85 passed in 0.67s
+
+Build passed. ✅
 ```
 
 ## Jira CLI use

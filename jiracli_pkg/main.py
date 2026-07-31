@@ -6,21 +6,19 @@ import re
 from calendar import monthrange
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, date
+from datetime import date, datetime
 from pathlib import Path
-from typing import Tuple
 
 import requests
 import typer
 from rich.console import Console
 from rich.table import Table
 
-from .utils import convert_to_hours, WORKING_DAYS
 from .config import (
     ADD_WORKLOG,
     BASE_URL,
-    EMAIL,
     DELETE_WORKLOG,
+    EMAIL,
     GET_ISSUE,
     GET_ISSUE_WORKLOG,
     JIRA_USERNAME,
@@ -29,6 +27,7 @@ from .config import (
     UPDATE_WORKLOG,
     WORK_HOURS,
 )
+from .utils import WORKING_DAYS, convert_to_hours
 
 app = typer.Typer()
 console = Console()
@@ -93,7 +92,7 @@ def get_issue_worklogs(issue: str):
         console.print(table)
 
         # Summary of logged work grouped by user.
-        totals_by_user = defaultdict(lambda: {"hours": 0.0, "entries": 0})
+        totals_by_user: dict[str, dict[str, float]] = defaultdict(lambda: {"hours": 0.0, "entries": 0})
         for log in worklogs:
             user = log.get('user') or "Unknown"
             totals_by_user[user]["hours"] += convert_to_hours(log.get('time_spent', ''))
@@ -235,7 +234,7 @@ def my_issues(max_results: int = 50):
     url = BASE_URL + SEARCH_ISSUES
     response = requests.get(
         url,
-        params={"jql": jql, "fields": "key,summary,status,priority", "maxResults": max_results},
+        params={"jql": jql, "fields": "key,summary,status,priority", "maxResults": str(max_results)},
         auth=(EMAIL, TOKEN),
         timeout=TIMEOUT
     )
@@ -304,7 +303,7 @@ def search_issues(text: str, max_results: int = 10):
     url = BASE_URL + SEARCH_ISSUES
     response = requests.get(
         url,
-        params={"jql": jql, "fields": "key,summary,status,assignee", "maxResults": max_results},
+        params={"jql": jql, "fields": "key,summary,status,assignee", "maxResults": str(max_results)},
         auth=(EMAIL, TOKEN),
         timeout=TIMEOUT
     )
@@ -361,7 +360,7 @@ def my_worklogs(month: int | None = None, year: int | None = None):
     url = BASE_URL + SEARCH_ISSUES
     response = requests.get(
         url,
-        params={"jql": jql, "fields": "key,summary", "maxResults": 100, "nextPageToken": ""},
+        params={"jql": jql, "fields": "key,summary", "maxResults": "100", "nextPageToken": ""},
         auth=(EMAIL, TOKEN),
         timeout=TIMEOUT,
     )
@@ -461,7 +460,7 @@ def my_worklogs(month: int | None = None, year: int | None = None):
                     elif day_total < expected_hours:
                         daily_str = f"[yellow]{daily_str}[/yellow]"
                         expected_str = f"[yellow]{expected_str}[/yellow]"
-                    elif day_total >= expected_hours and expected_hours > 0:
+                    elif day_total >= expected_hours > 0:
                         daily_str = f"[green]{daily_str}[/green]"
                         expected_str = f"[green]{expected_str}[/green]"
                 else:
@@ -547,11 +546,10 @@ def _submit_worklog(
     day = WEEK_DAYS[day_of_week]
     work_hours = WORK_HOURS.get(day)
 
-    if work_hours:
-        if (hours > work_hours and not overtime) or (total_hours_on_date >= work_hours and not overtime):
-            console.print("[red]Based on the template of your working hours you've exceeded your daily norm."
-                          " If you want to log anyway, run the same command with additional argument --overtime.[/red]")
-            raise typer.Abort()
+    if work_hours and ((hours > work_hours and not overtime) or (total_hours_on_date >= work_hours and not overtime)):
+        console.print("[red]Based on the template of your working hours you've exceeded your daily norm."
+                      " If you want to log anyway, run the same command with additional argument --overtime.[/red]")
+        raise typer.Abort()
 
     raw_path = BASE_URL + ADD_WORKLOG
     valid_url = raw_path.replace("{issueIdOrKey}", issue)
@@ -601,25 +599,24 @@ def _is_iso_date_format(value: str) -> bool:
     return re.match(pattern, value) is not None
 
 
-def _time_to_seconds(logged_time: str) -> Tuple[int, float]:
+def _time_to_seconds(logged_time: str) -> tuple[int, float]:
     """Return amount of seconds and decimal hours to be added to worklog."""
 
-    hours = re.search(r'(\d+(\.\d+)?)h', logged_time)
-    minutes = re.search(r'(\d+)m', logged_time)
+    hours_match = re.search(r'(\d+(\.\d+)?)h', logged_time)
+    minutes_match = re.search(r'(\d+)m', logged_time)
 
-    if hours:
+    minutes = int(minutes_match.group(1)) if minutes_match else 0
+
+    if hours_match:
         # split decimal hours into hours and minutes
-        hour_parts = hours.group(1).split('.')
+        hour_parts = hours_match.group(1).split('.')
         hours = int(hour_parts[0])
         if len(hour_parts) > 1:
             # convert decimal part to minutes (0.5 hours = 30 minutes)
             minutes_decimal = float("0." + hour_parts[1]) * 60
-            minutes = int(minutes.group(1)) if minutes else 0
-            minutes += int(round(minutes_decimal))
-        else:
-            minutes = int(minutes.group(1)) if minutes else 0
+            minutes += round(minutes_decimal)
     else:
-        hours, minutes = 0, int(minutes.group(1)) if minutes else 0
+        hours = 0
 
     total_seconds = (hours * 3600) + (minutes * 60)
     # convert total seconds to decimal hours
@@ -627,7 +624,7 @@ def _time_to_seconds(logged_time: str) -> Tuple[int, float]:
     return total_seconds, total_hours
 
 
-def _validate_time(logged_time: str) -> Tuple[int, float]:
+def _validate_time(logged_time: str) -> tuple[int, float]:
     """Validator used in time logging functions."""
 
     if not _is_valid_time_format(logged_time):
@@ -650,7 +647,7 @@ def _get_total_hours_on_date(date: str) -> float | None:
     url = BASE_URL + SEARCH_ISSUES
     response = requests.get(
         url,
-        params={"jql": jql, "fields": "key", "maxResults": 100, "nextPageToken": ""},
+        params={"jql": jql, "fields": "key", "maxResults": "100", "nextPageToken": ""},
         auth=(EMAIL, TOKEN),
         timeout=TIMEOUT
     )

@@ -1,4 +1,4 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 from jiracli_pkg.main import search_issues
 
@@ -80,4 +80,4 @@ class TestSearchJqlConstruction:
         search_issues("test", max_results=5)
         call_kwargs = mock_get.call_args
         params = call_kwargs.kwargs.get("params") or call_kwargs[1]["params"]
-        assert params["maxResults"] == 5
+        assert params["maxResults"] == "5"

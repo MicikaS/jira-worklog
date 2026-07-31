@@ -1,7 +1,7 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
-import typer
 import pytest
+import typer
 
 from jiracli_pkg.main import my_worklogs
 

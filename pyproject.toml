@@ -1,0 +1,14 @@
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+# DTZ rules require timezone-aware datetimes; this CLI only deals with local
+# calendar dates and local timestamps, so timezone awareness isn't needed.
+ignore = ["DTZ"]
+
+[tool.mypy]
+python_version = "3.11"
+
+[[tool.mypy.overrides]]
+module = "decouple"
+ignore_missing_imports = true

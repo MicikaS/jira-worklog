@@ -451,7 +451,6 @@ def my_worklogs(month: int | None = None, year: int | None = None):
                 expected_str = f"[red]{expected_str}[/red]"
             table.add_row(date_str, day_name, "", "", "", daily_str, expected_str, "")
         else:
-            style = "dim" if is_weekend else None
             for i, entry in enumerate(entries):
                 if i == len(entries) - 1:
                     daily_str = f"{day_total:.1f}h".replace(".0h", "h")

@@ -6,7 +6,7 @@ Jira Worklog is a Python command-line application for managing Jira worklogs, se
 
 Clone the repository via:
 ```shell
-git clone https://github.com/MicikaS/jira-cli-tool.git
+git clone https://github.com/MicikaS/jira-worklog.git
 ```
 
 ## Set up the .env file

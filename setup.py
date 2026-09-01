@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='jiracli',
+    name='jira-worklog',
     version='0.1',
     packages=find_packages(),
     install_requires=[
@@ -12,7 +12,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'jiracli=jiracli_pkg.main:app'
+            'jira-worklog=jira_worklog_pkg.main:app'
         ]
     },
 )

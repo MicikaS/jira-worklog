@@ -12,7 +12,7 @@ from rich.console import Console
 
 console = Console()
 
-PACKAGE = "jiracli_pkg"
+PACKAGE = "jira_worklog_pkg"
 TESTS = "tests"
 
 

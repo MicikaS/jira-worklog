@@ -1,6 +1,6 @@
 import unittest
 
-from jiracli_pkg.utils import convert_to_hours
+from jira_worklog_pkg.utils import convert_to_hours
 
 
 class TestConvertToHours(unittest.TestCase):

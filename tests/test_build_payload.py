@@ -2,7 +2,7 @@ import unittest
 
 import typer
 
-from jiracli_pkg.main import _build_payload
+from jira_worklog_pkg.main import _build_payload
 
 
 class TestBuildPayload(unittest.TestCase):

@@ -1,6 +1,6 @@
-# Jira CLI Tool
+# Jira Worklog
 
-Jira CLI Tool is a Python command-line application for managing Jira worklogs, searching assigned issues, importing worklogs from CSV files, and generating monthly time reports. It was created to automate a repetitive internal workflow and reduce manual Jira administration.
+Jira Worklog is a Python command-line application for managing Jira worklogs, searching assigned issues, importing worklogs from CSV files, and generating monthly time reports. It was created to automate a repetitive internal workflow and reduce manual Jira administration.
 
 ## Setup
 
@@ -107,17 +107,17 @@ Success: no issues found in 4 source files
 Build passed. ✅
 ```
 
-## Jira CLI use
+## Jira Worklog use
 
 To see available options and commands run
 
 ```shell
-jiracli --help
+jira-worklog --help
 ```
 
 You should see something like this:
 
-![jira-cli-help](dash-help.png)
+![jira-worklog-help](dash-help.png)
 
 
 On each command there is specific detail instruction on how to run the command and how to use arguments.
@@ -127,7 +127,7 @@ On each command there is specific detail instruction on how to run the command a
 To view basic stats for an issue (assignee, description, reporter, status):
 
 ```shell
-jiracli get KAN-3
+jira-worklog get KAN-3
 ```
 
 Example output:
@@ -144,7 +144,7 @@ Status: In Progress - In Progress
 For adding a worklog on a specific issue (task) we run:
 
 ```shell
-jiracli add KAN-3 7h 2023-12-12 --comment "some comment" --overtime
+jira-worklog add KAN-3 7h 2023-12-12 --comment "some comment" --overtime
 ```
 First argument (KAN-3) represents Issue Key/Task, second argument (7h) is logged hours,
 third argument is date (2023-12-12).
@@ -155,24 +155,24 @@ When updating or deleting a specific worklog, you need to have worklog ID.
 That ID you can get by running:
 
 ```shell
-jiracli get-issue-worklogs KAN-3
+jira-worklog get-issue-worklogs KAN-3
 ```
 
 This returns the worklog entries for that issue, including each entry's Worklog ID.
 
 Now, when updating or deleting specific worklog, you should use Worklog ID.
 ```shell
-jiracli update KAN-3 36973 30m 2023-12-12 --comment "Some comment here..."
+jira-worklog update KAN-3 36973 30m 2023-12-12 --comment "Some comment here..."
 ```
 and
 ```shell
-jiracli delete KAN-3 36973
+jira-worklog delete KAN-3 36973
 ```
 
 For adding multiple worklogs (for multiple days), run command:
 
 ```shell
-jiracli log-from-csv name_of_the_file.csv
+jira-worklog log-from-csv name_of_the_file.csv
 ```
 The file path can be either absolute (e.g. `/home/user/Documents/logs.csv`) or relative to your current directory (e.g. `./logs.csv`).
 
@@ -208,13 +208,13 @@ rm .logs.csv.status
 List all Jira issues currently assigned to you (excluding done tickets):
 
 ```shell
-jiracli my-issues
+jira-worklog my-issues
 ```
 
 You can limit the number of results (default is 50):
 
 ```shell
-jiracli my-issues --max-results 20
+jira-worklog my-issues --max-results 20
 ```
 
 Example output:
@@ -239,13 +239,13 @@ No issues found.
 You can search for Jira issues by text directly from the terminal. The search looks across issue summaries, descriptions, and comments.
 
 ```shell
-jiracli search "login bug"
+jira-worklog search "login bug"
 ```
 
 You can also limit the number of results (default is 10):
 
 ```shell
-jiracli search "deep link" --max-results 5
+jira-worklog search "deep link" --max-results 5
 ```
 
 Example output:
@@ -271,13 +271,13 @@ No issues found.
 View all your logged worklogs for a given month, grouped by day:
 
 ```shell
-jiracli my-worklogs
+jira-worklog my-worklogs
 ```
 
 By default it shows the current month. You can specify a different month and year:
 
 ```shell
-jiracli my-worklogs --month 3 --year 2026
+jira-worklog my-worklogs --month 3 --year 2026
 ```
 
 Example output:
@@ -316,13 +316,13 @@ Additional options provided by typer library is to install completion possibilit
 the current shell. Run:
 
 ```shell
-jiracli --install-completion
+jira-worklog --install-completion
 ```
 
 This will allow you to use tab button for autocompletion on functions and flags,
 only thing left to be done is to restart your terminal.
 
-## Make your jiracli command a cronjob
+## Make your jira-worklog command a cronjob
 
 First, make a bash script similar to this example:
 
@@ -335,7 +335,7 @@ source ~/.bashrc
 source ~/path-to-project/venv/bin/activate
 
 # Execute the command
-jiracli log-from-csv ~/path-to-project/logs.csv
+jira-worklog log-from-csv ~/path-to-project/logs.csv
 ```
 This script activates your environment and runs `log-from-csv` with the specified CSV file.
 The CLI automatically tracks which rows have been logged, so re-running the script

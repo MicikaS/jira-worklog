@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import typer
 
-from jiracli_pkg.main import _get_status_file_path, _try_log_time_from_csv_file
+from jira_worklog_pkg.main import _get_status_file_path, _try_log_time_from_csv_file
 
 
 class TestCsvParsing(unittest.TestCase):
@@ -36,7 +36,7 @@ class TestCsvParsing(unittest.TestCase):
             _try_log_time_from_csv_file(path)
         self.assertIn("not a CSV", str(ctx.exception))
 
-    @patch("jiracli_pkg.main._submit_worklog", return_value=True)
+    @patch("jira_worklog_pkg.main._submit_worklog", return_value=True)
     def test_valid_csv_all_succeed(self, mock_submit):
         path = self._write_csv("work.csv", [
             "Working Day,Issue,Time (Hours),Date,Overtime",
@@ -54,7 +54,7 @@ class TestCsvParsing(unittest.TestCase):
         finally:
             self._cleanup_status(path)
 
-    @patch("jiracli_pkg.main._submit_worklog", return_value=True)
+    @patch("jira_worklog_pkg.main._submit_worklog", return_value=True)
     def test_header_row_skipped(self, mock_submit):
         path = self._write_csv("work.csv", [
             "Working Day,Issue,Time (Hours),Date,Overtime",
@@ -66,7 +66,7 @@ class TestCsvParsing(unittest.TestCase):
         finally:
             self._cleanup_status(path)
 
-    @patch("jiracli_pkg.main._submit_worklog", return_value=True)
+    @patch("jira_worklog_pkg.main._submit_worklog", return_value=True)
     def test_comment_row_skipped(self, mock_submit):
         path = self._write_csv("work.csv", [
             "Monday,TEST-1,7h,2024-01-15,0",
@@ -79,7 +79,7 @@ class TestCsvParsing(unittest.TestCase):
         finally:
             self._cleanup_status(path)
 
-    @patch("jiracli_pkg.main._submit_worklog", return_value=True)
+    @patch("jira_worklog_pkg.main._submit_worklog", return_value=True)
     def test_already_logged_csv_raises(self, mock_submit):
         path = self._write_csv("work.csv", [
             "Monday,TEST-1,7h,2024-01-15,0",
@@ -95,7 +95,7 @@ class TestCsvParsing(unittest.TestCase):
         finally:
             self._cleanup_status(path)
 
-    @patch("jiracli_pkg.main._submit_worklog", side_effect=typer.Abort())
+    @patch("jira_worklog_pkg.main._submit_worklog", side_effect=typer.Abort())
     def test_partial_failure_reports_failed_rows(self, mock_submit):
         path = self._write_csv("work.csv", [
             "Monday,TEST-1,7h,2024-01-15,0",
@@ -107,7 +107,7 @@ class TestCsvParsing(unittest.TestCase):
         finally:
             self._cleanup_status(path)
 
-    @patch("jiracli_pkg.main._submit_worklog", return_value=True)
+    @patch("jira_worklog_pkg.main._submit_worklog", return_value=True)
     def test_resume_skips_already_logged_rows(self, mock_submit):
         path = self._write_csv("work.csv", [
             "Monday,TEST-1,7h,2024-01-15,0",
@@ -126,7 +126,7 @@ class TestCsvParsing(unittest.TestCase):
         finally:
             self._cleanup_status(path)
 
-    @patch("jiracli_pkg.main._submit_worklog", return_value=True)
+    @patch("jira_worklog_pkg.main._submit_worklog", return_value=True)
     def test_invalid_working_day_raises(self, mock_submit):
         path = self._write_csv("work.csv", [
             "Caturday,TEST-1,7h,2024-01-15,0",
@@ -138,7 +138,7 @@ class TestCsvParsing(unittest.TestCase):
         finally:
             self._cleanup_status(path)
 
-    @patch("jiracli_pkg.main._submit_worklog", return_value=True)
+    @patch("jira_worklog_pkg.main._submit_worklog", return_value=True)
     def test_empty_rows_skipped(self, mock_submit):
         path = self._write_csv("work.csv", [
             "Monday,TEST-1,7h,2024-01-15,0",

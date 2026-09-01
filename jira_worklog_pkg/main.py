@@ -46,7 +46,7 @@ ISSUE_KEY_PATTERN = re.compile(r'^[A-Z][A-Z0-9_]+-\d+$')
 def get_issue(issue: str):
     """
     Get issue stats.
-    Run this command with argument that represents Issue Key/task (e.g. jiracli get-issue KAN-3)
+    Run this command with argument that represents Issue Key/task (e.g. jira-worklog get-issue KAN-3)
     """
     issue = _validate_issue_key(issue)
     raw_path = BASE_URL + GET_ISSUE
@@ -77,7 +77,7 @@ def get_issue(issue: str):
 def get_issue_worklogs(issue: str):
     """
     Get issue worklogs.
-    Run this command with flag that represents Issue Key/task (e.g. jiracli get-issue-worklogs KAN-3)
+    Run this command with flag that represents Issue Key/task (e.g. jira-worklog get-issue-worklogs KAN-3)
     """
     issue = _validate_issue_key(issue)
     worklogs = _issue_worklogs(issue)
@@ -134,7 +134,7 @@ def add_worklog(
     Add issue worklogs.
     Run this command with Issue Key/task (e.g. KAN-3), time (examples, 7h, 7h30m, 7.5h, 20m),
     date (YYYY-MM-DD), comment (Optional) and overtime (Optional-allows logging up to 13h on a single day).
-    Example: jiracli add KAN-3 7.5h 2023-12-12 --comment "Done some work here." --overtime
+    Example: jira-worklog add KAN-3 7.5h 2023-12-12 --comment "Done some work here." --overtime
     """
     issue = _validate_issue_key(issue)
     _submit_worklog(issue, logged_time, date, comment, overtime)
@@ -228,7 +228,7 @@ def my_issues(max_results: int = 50):
     """
     List issues currently assigned to you.
     Uses JQL: assignee=currentUser() AND status!=Done.
-    Example: jiracli my-issues --max-results 20
+    Example: jira-worklog my-issues --max-results 20
     """
     jql = 'assignee=currentUser() AND status!=Done ORDER BY updated DESC'
     url = BASE_URL + SEARCH_ISSUES
@@ -297,7 +297,7 @@ def search_issues(text: str, max_results: int = 10):
     """
     Search Jira issues by text.
     Searches across summary, description, and comments.
-    Example: jiracli search "login bug" --max-results 5
+    Example: jira-worklog search "login bug" --max-results 5
     """
     jql = f'text ~ "{text}" ORDER BY updated DESC'
     url = BASE_URL + SEARCH_ISSUES
@@ -337,7 +337,7 @@ def search_issues(text: str, max_results: int = 10):
 def my_worklogs(month: int | None = None, year: int | None = None):
     """
     Display all your worklogs for a given month in a table grouped by day.
-    Defaults to the current month. Example: jiracli my-worklogs --month 3 --year 2026
+    Defaults to the current month. Example: jira-worklog my-worklogs --month 3 --year 2026
     """
     user = JIRA_USERNAME
     if not user:

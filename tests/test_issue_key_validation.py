@@ -1,7 +1,7 @@
 import pytest
 import typer
 
-from jiracli_pkg.main import _validate_issue_key
+from jira_worklog_pkg.main import _validate_issue_key
 
 
 class TestValidIssueKeys:

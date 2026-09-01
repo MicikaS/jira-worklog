@@ -1,6 +1,6 @@
 import unittest
 
-from jiracli_pkg.main import _is_valid_time_format, _time_to_seconds
+from jira_worklog_pkg.main import _is_valid_time_format, _time_to_seconds
 
 
 class TestTimeFunctions(unittest.TestCase):

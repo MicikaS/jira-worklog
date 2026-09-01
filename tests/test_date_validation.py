@@ -1,6 +1,6 @@
 import unittest
 
-from jiracli_pkg.main import _is_iso_date_format
+from jira_worklog_pkg.main import _is_iso_date_format
 
 
 class TestIsoDateFormat(unittest.TestCase):

@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 
 import requests
 
-from jiracli_pkg.main import _get_error_messages
+from jira_worklog_pkg.main import _get_error_messages
 
 
 class TestGetErrorMessages(unittest.TestCase):
